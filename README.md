@@ -5,7 +5,7 @@
 課程名稱   | 計算機結構 (nand2tetris - Part I)
 開課單位   | 金門大學資訊工程系
 開課年度   | 106 年上學期
-學員姓名   | 
+學員姓名   | 林柏億
 教師姓名   | 陳鍾誠
 上課教材   | [wiki](https://github.com/cccnqu/co106a/wiki)
 程式範例   | [example](example)
