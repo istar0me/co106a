@@ -23,11 +23,11 @@ CHIP Mux8Way16 {
 
     PARTS:
     // Put your code here:
-    Mux16(a=a,b=b,sel=sel[2],out=rab);
-    Mux16(a=c,b=d,sel=sel[2],out=rcd);
-    Mux16(a=e,b=f,sel=sel[2],out=ref);
-    Mux16(a=g,b=h,sel=sel[2],out=rgh);
+    Mux16(a=a,b=b,sel=sel[0],out=rab);
+    Mux16(a=c,b=d,sel=sel[0],out=rcd);
+    Mux16(a=e,b=f,sel=sel[0],out=ref);
+    Mux16(a=g,b=h,sel=sel[0],out=rgh);
     Mux16(a=rab,b=rcd,sel=sel[1],out=rabcd);
     Mux16(a=ref,b=rgh,sel=sel[1],out=refgh);
-    Mux16(a=rabcd,b=refgh,sel=sel[0],out=out);
+    Mux16(a=rabcd,b=refgh,sel=sel[2],out=out);
 }
