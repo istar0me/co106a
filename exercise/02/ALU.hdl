@@ -23,7 +23,7 @@
 // if (f == 1)  set out = x + y  // integer 2's complement addition
 // if (f == 0)  set out = x & y  // bitwise and
 // if (no == 1) set out = !out   // bitwise not
-// if (out == 0) set zr = 1
+// if (out == 0) set zr = 1 
 // if (out < 0) set ng = 1
 
 CHIP ALU {
@@ -43,4 +43,37 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+   // if zx {x = 0}
+   Mux16(a=x,b=false,sel=zx,out=x1);
+
+   // if nx {x = !x}
+   Not16(in=x1,out=notx1);
+   Mux16(a=x1,b=notx1,sel=nx,out=x2);
+
+   // if (zy) {y = 0}
+   Mux16(a=y,b=false,sel=zy,out=y1);
+
+   // if (ny) {y = !y}
+   Not16(in=y1,out=noty1);
+   Mux16(a=y1,b=noty1,sel=ny,out=y2);
+
+   // if (f) {out = x + y} else {out = x & y}
+   Add16(a=x2,b=y2,out=addx2y2); // x2 + y2
+   And16(a=x2,b=y2,out=andx2y2); // x2 & y2
+   Mux16(a=andx2y2,b=addx2y2,sel=f,out=xy);
+
+   // if (no) {out = !out}
+   Not16(in=xy,out=notxy);
+   Mux16(a=xy,b=notxy,sel=no,out[0..7]=o1,out[8..15]=o2,out[15]=o3,out=out);
+
+    // if (out == 0) {zr = 1} else {zr = 0}
+   Or8Way(in=o1,out=Oo1);
+   Or8Way(in=o2,out=Oo2);
+   Or(a=Oo1,b=Oo2,out=Oo3);
+   Not(in=Oo3,out=zr);
+
+   // if (out < 0) {ng = 1} else {ng = 0}
+   // if (out[15] = 1) {ng = 1} else {ng = 0}
+   And(a=o3,b=o3,out=ng1);
+   Mux(a=false,b=true,sel=ng1,out=ng);
 }
