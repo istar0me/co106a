@@ -1,0 +1,26 @@
+CHIP Dis7 {
+    IN
+        x, y, z, w;
+    OUT
+        d;
+
+    PARTS:
+    Not(in=y,out=noty);
+    Not(in=z,out=notz);
+    Not(in=w,out=notw);
+
+    And(a=noty,b=z,out=notyandz);
+
+    And(a=z,b=notw,out=zandnotw);
+
+    And(a=noty,b=notz,out=notyandnotz);
+    And(a=notyandnotz,b=notw,out=r1);
+
+    And(a=y,b=notz,out=yandnotz);
+    And(a=yandnotz,b=w,out=r2);
+
+    Or(a=x,b=notyandz,out=o1);
+    Or(a=o1,b=zandnotw,out=o2);
+    Or(a=o2,b=r1,out=o3);
+    Or(a=o3,b=r2,out=d);
+}
