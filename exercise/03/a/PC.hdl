@@ -16,4 +16,35 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
+    
+    // Put your code here:
+    // Mux16(a=in,b=false,sel=reset,out=r1);
+    // Register(in=r1,load=true,out=r2);
+
+    // Register(in=r2,load=load,out=r3);
+    
+    // Inc16(in=r3,out=r4);
+    // Mux16(a=r3,b=r4,sel=inc,out=r5);
+    // Register(in=r5,load=true,out=out);
+    
+    // Inc16(in=in,out=incin);
+    // Mux16(a=in,b=incin,sel=inc,out=incout);
+    // Register(in=incout,load=load,out=loadout);
+    // Mux16(a=in,b=false,sel=reset,out=resetin);
+    // Register(in=resetin,load=true,out=out);
+
+    // Inc16(in=out1,out=inc16out);
+    // Mux16(a=out1,b=inc16out,sel=inc,out=incout);
+    // Mux16(a=incout,b=in,sel=load,out=loadout);
+    // Mux16(a=loadout,b=false,sel=reset,out=resetout);
+    // Register(in=resetout,load=load,out=out,out=out1);
+
+    Inc16(in=outFeed,out=incMux);
+    Mux16(a=outFeed,b=incMux,sel=inc,out=loadMux);
+    Mux16(a=loadMux,b=in,sel=load,out=resetMux);
+    Mux16(a=resetMux,b=false,sel=reset,out=loadRegister);
+
+    Or(a=load,b=inc,out=loadOrInc);
+    Or(a=loadOrInc,b=reset,out=loadOrIncOrReset);
+    Register(in=loadRegister,load=loadOrIncOrReset,out=outFeed,out=out);
 }
