@@ -40,4 +40,38 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    // A Register
+    Not(in=instruction[15],out=isA); // i[15] = 0 => isA
+    Not(in=isA,out=isC); // i[15] = 1 => isC
+    Mux16(a=instruction,b=ALUout,sel=isC,out=Ain);
+    And(a=isC,b=instruction[5],out=ALUtoA);
+    Or(a=isA,b=ALUtoA,out=Aload);
+
+    ARegister(in=Ain,load=Aload,out=Aout,out[0..14]=addressM);
+
+    // D Register
+    And(a=isC,b=instruction[4],out=Dload);
+    DRegister(in=ALUout,load=Dload,out=Dout);
+
+    // ALU
+    Mux16(a=Aout,b=inM,sel=instruction[12],out=AorM);
+    ALU(x=Dout,y=AorM,zx=instruction[11],nx=instruction[10],zy=instruction[9],ny=instruction[8],f=instruction[7],no=instruction[6],out=ALUout,out=outM,zr=zr,ng=ng);
+
+    // Destination
+    And(a=ng,b=instruction[2],out=ngPass);
+    And(a=zr,b=instruction[1],out=eqPass);
+
+    // (x < 0) || (x = 0) 等價於 x > 0
+    // 注意中間是 Or，並不是 And
+    Or(a=ng,b=zr,out=ngorzr); // !!!!!
+    Not(in=ngorzr,out=gt);
+    And(a=gt,b=instruction[0],out=gtPass);
+
+    Or(a=ngPass,b=eqPass,out=elPass);
+    Or(a=elPass,b=gtPass,out=allPass);
+    And(a=isC,b=allPass,out=PCload);
+
+    // Output
+    PC(in=Aout,load=PCload,inc=true,reset=reset,out[0..14]=pc);
+    And(a=isC,b=instruction[3],out=writeM);
 }
